@@ -1,9 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { register } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import { EyeIcon, EyeOffIcon } from "@/components/lucide";
+import { registerUser } from "@/lib/client/auth";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -31,33 +31,20 @@ export default function RegisterPage() {
     setError("");
     setLoading(true);
 
-    const urn = username.trim();
-    const stn = studentId.trim();
-    const pw = password.trim();
-    const cpw = confirmPassword.trim();
-
-    if (urn.length < 4 || stn.length < 7 || pw.length < 6) {
-      setError("ユーザー名は4文字以上、学籍番号は7文字以上、パスワードは6文字以上にしてね");
-      setLoading(false);
-      return;
-    }
-
-    if (pw !== cpw) {
+    if (password !== confirmPassword) {
       setError("パスワードが一致しません");
       setLoading(false);
       return;
     }
 
-    const success = register(urn, stn, pw);
-
-    if (!success) {
-      setError("このユーザー名、または学籍番号はすでに使われています");
+    try {
+      await registerUser({ username, studentId, password });
       setLoading(false);
-      return;
+      router.push("/login");
+    } catch (err: any) {
+      setError(err.message || "登録に失敗しました");
+      setLoading(false);
     }
-
-    setLoading(false);
-    router.push("/");
   };
 
   return (

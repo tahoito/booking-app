@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { login } from "@/lib/auth";
+import { loginUser } from "@/lib/client/auth";
 import { useRouter } from "next/navigation";
 import { EyeIcon, EyeOffIcon } from "@/components/lucide";
 
@@ -23,28 +23,17 @@ export default function LoginPage() {
         setError("");
         setLoading(true);
 
-        const urn = username.trim();
-        const pw = password.trim();
-
-        if (urn.length < 4 || pw.length < 4) {
-            setError("ユーザー名とパスワードを入力してね");
+        
+        try {            
+            await loginUser({ username, password });
             setLoading(false);
-            return;
-        }
-
-
-        const success = login(urn, pw);
-
-        if (!success) {
-            setError("ユーザー名またはパスワードが違います");
+            router.push("/");
+        }catch (err: any) {
+            setError(err.message || "ログインに失敗しました");
             setLoading(false);
-            return;
+        }finally {
+            setLoading(false);
         }
-
-        // ログイン成功
-        setLoading(false);
-        router.push("/");
-
     };
 
     return (
