@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { register } from "@/lib/auth";
 import { useRouter } from "next/navigation";
+import { EyeIcon, EyeOffIcon } from "@/components/lucide";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -10,6 +11,8 @@ export default function RegisterPage() {
   const [studentId, setStudentId] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -91,24 +94,60 @@ export default function RegisterPage() {
 
                     <div>
                         <label className="text-base">パスワード</label>
-                        <input
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="パスワードを入力"
-                        className="mt-2 w-full rounded-[10px] border border-main/40 bg-white px-4 py-3 text-base text-text placeholder:text-placeholder outline-none transition focus:border-main focus:ring-2 focus:ring-main/20"
-                        type="password"
-                        />
+                        <div className="relative mt-2" style={{ position: "relative" }}>
+                          <input
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="パスワードを入力"
+                            className="w-full rounded-[10px] border border-main/40 bg-white px-4 py-3 pr-12 text-base text-text placeholder:text-placeholder outline-none transition focus:border-main focus:ring-2 focus:ring-main/20"
+                            type={showPassword ? "text" : "password"}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword((prev) => !prev)}
+                            aria-label={showPassword ? "パスワードを隠す" : "パスワードを表示"}
+                            className="text-main2 transition hover:text-main"
+                            style={{
+                              position: "absolute",
+                              right: "0.75rem",
+                              top: "50%",
+                              transform: "translateY(-50%)",
+                              display: "flex",
+                              alignItems: "center",
+                            }}
+                          >
+                            {showPassword ? <EyeOffIcon size={20} /> : <EyeIcon size={20} />}
+                          </button>
+                        </div>
                     </div>
 
                     <div>
                         <label className="text-base">パスワード(確認)</label>
-                        <input
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        placeholder="もう一度入力"
-                        className="mt-2 w-full rounded-[10px] border border-main/40 bg-white px-4 py-3 text-base text-text placeholder:text-placeholder outline-none transition focus:border-main focus:ring-2 focus:ring-main/20"
-                        type="password"
-                        />
+                        <div className="relative mt-2" style={{ position: "relative" }}>
+                          <input
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            placeholder="もう一度入力"
+                            className="w-full rounded-[10px] border border-main/40 bg-white px-4 py-3 pr-12 text-base text-text placeholder:text-placeholder outline-none transition focus:border-main focus:ring-2 focus:ring-main/20"
+                            type={showConfirmPassword ? "text" : "password"}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowConfirmPassword((prev) => !prev)}
+                            aria-label={showConfirmPassword ? "パスワードを隠す" : "パスワードを表示"}
+                            className="text-main2 transition hover:text-main"
+                            style={{
+                              position: "absolute",
+                              right: "0.75rem",
+                              top: "50%",
+                              transform: "translateY(-50%)",
+                              display: "flex",
+                              alignItems: "center",
+                            }}
+                          >
+                            {showConfirmPassword ? <EyeOffIcon size={20} /> : <EyeIcon size={20} />}
+                          </button>
+                        </div>
                     </div>
 
                     {error && <p className="text-sm text-red-600">{error}</p>}

@@ -3,11 +3,13 @@
 import { useMemo, useState } from "react";
 import { login } from "@/lib/auth";
 import { useRouter } from "next/navigation";
+import { EyeIcon, EyeOffIcon } from "@/components/lucide";
 
 export default function LoginPage() {
     const router = useRouter();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
@@ -50,7 +52,7 @@ export default function LoginPage() {
             <div className="flex min-h-screen items-center justify-center">
                 <section className="w-full overflow-hidden">
                     <div className="mt-60 rounded-tl-[100px] bg-bg px-6 pt-30 text-text min-h-screen">
-                        <h1 className="text-center text-xl font-semibold tracking-wide">ログイン</h1>
+                        <h1 className="text-center text-2xl font-semibold tracking-wide">ログイン</h1>
 
                         <form onSubmit={onSubmit} className="mt-12 space-y-5">
                             <div>
@@ -65,14 +67,35 @@ export default function LoginPage() {
 
                             <div>
                                 <label className="text-base">パスワード</label>
-                                <input
+
+                                <div className="relative mt-2" style={{ position: "relative" }}>
+                                    <input
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     placeholder="パスワードを入力"
-                                    className="mt-2 w-full rounded-[10px] border border-main/40 bg-white px-4 py-3 text-base text-text placeholder:text-placeholder outline-none transition focus:border-main focus:ring-2 focus:ring-main/20"
-                                    type="password"
-                                />
+                                    className="w-full rounded-[10px] border border-main/40 bg-white px-4 py-3 pr-12 text-base text-text placeholder:text-placeholder outline-none transition focus:border-main focus:ring-2 focus:ring-main/20"
+                                    type={showPassword ? "text" : "password"}
+                                    />
+
+                                    <button
+                                    type="button"
+                                    onClick={() => setShowPassword((prev) => !prev)}
+                                    aria-label={showPassword ? "パスワードを隠す" : "パスワードを表示"}
+                                    className="rounded-md p-2 text-main2 transition hover:text-main"
+                                    style={{
+                                        position: "absolute",
+                                        right: "0.5rem",
+                                        top: "50%",
+                                        transform: "translateY(-50%)",
+                                        display: "flex",
+                                        alignItems: "center",
+                                    }}
+                                    >
+                                    {showPassword ? <EyeOffIcon size={20} /> : <EyeIcon size={20} />}
+                                    </button>
+                                </div>
                             </div>
+
 
                             {error && (
                                 <p className="text-sm text-red-600">{error}</p>
