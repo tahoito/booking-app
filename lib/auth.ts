@@ -1,6 +1,7 @@
 // Auth helpers live here.
 export type User = {
     username: string;
+    studentId: string;  
     password: string;
 };
 
@@ -38,4 +39,24 @@ export function getAuthUser() : User | null{
 export function clearAuth() {
   if (typeof window === "undefined") return;
     localStorage.removeItem(AUTH_KEY);
+}
+
+export function register(username: string, studentId: string, password: string): boolean {
+  if (typeof window === "undefined") return false;
+
+  const users = getUsers();
+  const exists = users.some(
+    (u) => u.username === username || u.studentId === studentId
+  );
+  if (exists) return false;
+
+  users.push({ username, studentId, password });
+  localStorage.setItem(USERS_KEY, JSON.stringify(users));
+
+  localStorage.setItem(
+    AUTH_KEY,
+    JSON.stringify({ username, token: "dummy-token" })
+  );
+
+  return true;
 }

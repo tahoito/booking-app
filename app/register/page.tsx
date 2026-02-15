@@ -1,0 +1,136 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import { register } from "@/lib/auth";
+import { useRouter } from "next/navigation";
+
+export default function RegisterPage() {
+  const router = useRouter();
+  const [username, setUsername] = useState("");
+  const [studentId, setStudentId] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const canSubmit = useMemo(() => {
+    return (
+      username.trim().length >= 4 &&
+      studentId.trim().length >= 7 &&
+      password.trim().length >= 6 &&
+      confirmPassword.trim().length >= 6 &&
+      !loading
+    );
+  }, [username, studentId, password, confirmPassword, loading]);
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    const urn = username.trim();
+    const stn = studentId.trim();
+    const pw = password.trim();
+    const cpw = confirmPassword.trim();
+
+    if (urn.length < 4 || stn.length < 7 || pw.length < 6) {
+      setError("ユーザー名は4文字以上、学籍番号は7文字以上、パスワードは6文字以上にしてね");
+      setLoading(false);
+      return;
+    }
+
+    if (pw !== cpw) {
+      setError("パスワードが一致しません");
+      setLoading(false);
+      return;
+    }
+
+    const success = register(urn, stn, pw);
+
+    if (!success) {
+      setError("このユーザー名、または学籍番号はすでに使われています");
+      setLoading(false);
+      return;
+    }
+
+    setLoading(false);
+    router.push("/");
+  };
+
+  return (
+    <main className="min-h-screen bg-main">
+        <div className="min-h-screen">
+            <section className="w-full">
+                <header className="bg-main py-10 pt-6 flex items-center justify-center">
+                    <h1 className="text-center text-2xl text-bg font-semibold tracking-wide">
+                        新規登録
+                    </h1>
+                </header>
+                <div className="mt-6 rounded-tl-[100px] bg-bg px-6 pt-12 py-6 text-text min-h-screen">
+                    <form onSubmit={onSubmit} className="mt-8 space-y-5">
+                    <div>
+                        <label className="text-base">ユーザー名</label>
+                        <input
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        placeholder="ユーザー名を入力"
+                        className="mt-2 w-full rounded-[10px] border border-main/40 bg-white px-4 py-3 text-base text-text placeholder:text-placeholder outline-none transition focus:border-main focus:ring-2 focus:ring-main/20"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="text-base">学籍番号</label>
+                        <input
+                        value={studentId}
+                        onChange={(e) => setStudentId(e.target.value)}
+                        placeholder="学籍番号を入力"
+                        className="mt-2 w-full rounded-[10px] border border-main/40 bg-white px-4 py-3 text-base text-text placeholder:text-placeholder outline-none transition focus:border-main focus:ring-2 focus:ring-main/20"
+                        inputMode="numeric"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="text-base">パスワード</label>
+                        <input
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="パスワードを入力"
+                        className="mt-2 w-full rounded-[10px] border border-main/40 bg-white px-4 py-3 text-base text-text placeholder:text-placeholder outline-none transition focus:border-main focus:ring-2 focus:ring-main/20"
+                        type="password"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="text-base">パスワード(確認)</label>
+                        <input
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        placeholder="もう一度入力"
+                        className="mt-2 w-full rounded-[10px] border border-main/40 bg-white px-4 py-3 text-base text-text placeholder:text-placeholder outline-none transition focus:border-main focus:ring-2 focus:ring-main/20"
+                        type="password"
+                        />
+                    </div>
+
+                    {error && <p className="text-sm text-red-600">{error}</p>}
+
+                    <button
+                        disabled={!canSubmit}
+                        className="w-full rounded-full bg-main mt-6 h-[55px] text-bg font-semibold shadow-[0_10px_24px_-16px_rgba(0,47,108,0.75)] transition disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                        {loading ? "登録中..." : "新規登録"}
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={() => router.push("/login")}
+                        className="text-center text-sm text-main2 w-full"
+                    >
+                        ログインはこちら
+                    </button>
+                </form>
+            </div>
+        </section>
+      </div>
+    </main>
+  );
+}

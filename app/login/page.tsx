@@ -85,9 +85,13 @@ export default function LoginPage() {
                                 {loading ? "ログイン中..." : "ログイン"}
                             </button>
 
-                            <div className="text-center text-sm text-main2">
+                            <button
+                                type="button"
+                                onClick={() => router.push("/register")}
+                                className="text-center text-sm text-main2 w-full"
+                            >
                                 アカウント作成はこちら
-                            </div>
+                            </button>
                         </form>
                     </div>
                 </section>
