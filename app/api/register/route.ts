@@ -1,43 +1,48 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import { readUsers, writeUsers } from "@/lib/users-store";
+import { prisma } from "@/lib/prisma";
+
 
 export async function POST(request: Request) {
-  const { username, studentId, password } = await request.json();
+    const { username, studentId, password } = await request.json();
 
-  if (
-    typeof username !== "string" || 
-    typeof studentId !== "string" ||
-    typeof password !== "string" 
-) {
-    return NextResponse.json({ error: "Invalid input" }, { status: 400 });
-  }
+    if (
+        typeof username !== "string" || 
+        typeof studentId !== "string" ||
+        typeof password !== "string" 
+    ) {
+        return NextResponse.json({ error: "Invalid input" }, { status: 400 });
+    }
 
-  const u = username.trim();
-  const s = studentId.trim();
-  const p = password.trim();
+    const u = username.trim();
+    const s = studentId.trim();
+    const p = password;
 
-  if (!u || !s || !p) {
-    return NextResponse.json({ error: "ユーザー名、学生ID、パスワードは必須です" }, { status: 400 });
-  }
+    if (!u || !s || !p) {
+        return NextResponse.json({ error: "ユーザー名、学生ID、パスワードは必須です" }, { status: 400 });
+    }
 
-  const users = await readUsers();
-  const existingUser = users.find((u) => u.username === username);
+    const exists = await prisma.user.findFirst({
+        where: {
+            OR: [
+                { username: u },
+                { studentId: s },
+            ],
+        },
+    });
 
-  if (existingUser) {
-    return NextResponse.json({ error: "ユーザー名は既に使われています" }, { status: 400 });
-  }
+    if (exists) {
+        return NextResponse.json({ error: "ユーザー名または学生IDは既に使用されています" }, { status: 409 });
+    }   
 
-  const passwordHash = await bcrypt.hash(password, 10);
-  const newUser = { 
-    id: crypto.randomUUID(), 
-    username: u,
-    studentId: s,
-    passwordHash, 
-};
+    const passwordHash = await bcrypt.hash(p, 10);
+    await prisma.user.create({
+        data: {
+            username: u,
+            studentId: s,
+            passwordHash,
+        },
+    });
 
-  users.push(newUser);
-  await writeUsers(users);
-
-  return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true });
 }

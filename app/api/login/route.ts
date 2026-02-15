@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import { readUsers } from "@/lib/users-store";
+import { prisma } from "@/lib/prisma";
 import { setLogin } from "@/lib/auth";
 
 export async function POST(request: Request) {
@@ -13,19 +13,22 @@ export async function POST(request: Request) {
   const u = username.trim();
   const p = password;
 
-  const users = await readUsers();
-  const user = users.find((u) => u.studentId === username);
+  const user = await prisma.user.findUnique({
+    where: { username: u },
+    select: { id: true, passwordHash: true },
+  });
 
+  
   if (!user) {
     return NextResponse.json({ error: "ユーザー名またはパスワードが違います" }, { status: 401 });
   }
 
   const ok = await bcrypt.compare(p, user.passwordHash);
   if (!ok) {
-    return NextResponse.json({ error: "ユーザー名またはパスワードが違います" }, { status: 401 });
+    return NextResponse.json({ error: "またはパスワードが違います" }, { status: 401 });
   }
 
-  setLogin(user.id);
+  await setLogin(user.id);
 
   return NextResponse.json({ success: true });
 }

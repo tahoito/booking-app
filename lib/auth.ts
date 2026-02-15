@@ -2,8 +2,10 @@ import { cookies } from "next/headers";
 
 const COOKIE_NAME = "uid";
 
-export function setLogin(userId: string) {
-  cookies().set({
+export async function setLogin(userId: string) {
+  const cookieStore = await cookies();
+
+  cookieStore.set({
     name: COOKIE_NAME,
     value: userId,
     httpOnly: true,
@@ -13,10 +15,12 @@ export function setLogin(userId: string) {
   });
 }
 
-export function getLoginUserId() {
-  return cookies().get(COOKIE_NAME)?.value ?? null;
+export async function getLoginUserId() {
+  const cookieStore = await cookies();
+  return cookieStore.get(COOKIE_NAME)?.value ?? null;
 }
 
-export function clearLogin() {
-  cookies().delete(COOKIE_NAME);
+export async function clearLogin() {
+  const cookieStore = await cookies();
+  cookieStore.delete(COOKIE_NAME);
 }
