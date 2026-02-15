@@ -18,7 +18,7 @@ export default function RegisterPage() {
 
   const canSubmit = useMemo(() => {
     return (
-      username.trim().length >= 4 &&
+      username.trim().length >= 2 &&
       studentId.trim().length >= 7 &&
       password.trim().length >= 6 &&
       confirmPassword.trim().length >= 6 &&
@@ -39,8 +39,7 @@ export default function RegisterPage() {
 
     try {
       await registerUser({ username, studentId, password });
-      setLoading(false);
-      router.push("/login");
+      router.replace("/");
     } catch (err: any) {
       setError(err.message || "登録に失敗しました");
       setLoading(false);
