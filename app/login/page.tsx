@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { loginUser } from "@/lib/client/auth";
 import { useRouter } from "next/navigation";
-import { EyeIcon, EyeOffIcon } from "@/components/lucide";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function LoginPage() {
     const router = useRouter();
@@ -80,7 +80,7 @@ export default function LoginPage() {
                                         alignItems: "center",
                                     }}
                                     >
-                                    {showPassword ? <EyeOffIcon size={20} /> : <EyeIcon size={20} />}
+                                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                                     </button>
                                 </div>
                             </div>
