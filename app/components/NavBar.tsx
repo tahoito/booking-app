@@ -29,8 +29,12 @@ export default function NavBar() {
           {items.map((item) => {
             const isActive =
               item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
-            const tone = isActive ? "text-bg" : "text-placeholder";
-            const icon = <item.Icon size={30} className={tone} />;
+            const icon = (
+              <item.Icon
+                size={30}
+                className={isActive ? "text-bg" : "text-placeholder"}
+              />
+            );
 
             return (
               <li key={item.href} className="flex-1">
@@ -52,7 +56,13 @@ export default function NavBar() {
                       {icon}
                     </span>
                   )}
-                  <span className={`${tone} text-[8px]`}>{item.label}</span>
+                  <span
+                    className={`text-[10px] ${
+                      isActive ? "text-bg" : "text-placeholder"
+                    }`}
+                  >
+                    {item.label}
+                  </span>
                 </Link>
               </li>
             );

@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@source "./app/**/*.{js,ts,jsx,tsx,mdx}";
+@source "./components/**/*.{js,ts,jsx,tsx,mdx}";
 
 :root {
   --background: #ffffff;
@@ -19,6 +21,7 @@
   --color-placeholder: #777777;
   --color-available: #22C55E;
   --color-unavailable: #EF4444;
+  --color-not-use: #64748B;
 }
 
 @media (prefers-color-scheme: dark) {
