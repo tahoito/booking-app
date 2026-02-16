@@ -1,7 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { Bell, ChevronRight } from "lucide-react";
 import AppButton from "@/app/components/AppButton";
+import SeatUseModal from "@/app/components/SeatUseModal";
 import SeatStatusCard from "@/app/components/SeatStatusCard";
 
 const seatStatuses = [
@@ -11,6 +13,7 @@ const seatStatuses = [
 ];
 
 export default function HomePage() {
+  const [isSeatUseModalOpen, setSeatUseModalOpen] = useState(false);
   const dateLabel = new Intl.DateTimeFormat("ja-JP", {
     month: "numeric",
     day: "numeric",
@@ -24,13 +27,13 @@ export default function HomePage() {
           <div className="flex items-center gap-4">
             <div className="h-16 w-16 rounded-full bg-bg/80" aria-hidden="true" />
             <div>
-              <p className="text-sm text-bg/70">2303047</p>
+              <p className="text-sm text-placeholder">2303047</p>
               <p className="text-lg font-semibold">Taho</p>
             </div>
           </div>
           <button
             type="button"
-            className="rounded-full p-2 text-bg/90 transition hover:text-bg"
+            className="rounded-full p-2 text-bg transition"
             aria-label="通知"
           >
             <Bell size={24} />
@@ -38,7 +41,12 @@ export default function HomePage() {
         </header>
 
         <div className="mt-8">
-          <AppButton variant="ghost">今すぐ席を利用する</AppButton>
+          <AppButton
+            variant="ghost"
+            onClick={() => setSeatUseModalOpen(true)}
+          >
+            今すぐ席を利用する
+          </AppButton>
         </div>
       </section>
 
@@ -95,6 +103,12 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+
+      <SeatUseModal
+        isOpen={isSeatUseModalOpen}
+        onClose={() => setSeatUseModalOpen(false)}
+        onConfirm={() => setSeatUseModalOpen(false)}
+      />
     </main>
   );
 }

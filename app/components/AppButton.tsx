@@ -1,11 +1,9 @@
 "use client";
 
-import type { ReactNode } from "react";
+import type { ButtonHTMLAttributes } from "react";
 
-type AppButtonProps = {
-  children: ReactNode;
+type AppButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: "primary" | "ghost";
-  className?: string;
 };
 
 const variantStyles: Record<NonNullable<AppButtonProps["variant"]>, string> = {
@@ -19,11 +17,14 @@ export default function AppButton({
   children,
   variant = "primary",
   className = "",
+  type = "button",
+  ...props
 }: AppButtonProps) {
   return (
     <button
-      type="button"
+      type={type}
       className={`flex w-full items-center justify-center text-[18px] tracking-wide transition ${variantStyles[variant]} ${className}`}
+      {...props}
     >
       {children}
     </button>
